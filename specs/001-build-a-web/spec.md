@@ -10,35 +10,42 @@
 ## User Scenarios & Testing *(mandatory)*
 
 ### Primary User Story
-As a user, I want to organize my bookmarks into a nested folder structure so that I can easily find them later. I want to be able to view my bookmarks as a simple list or as a grid of tiles for a more visual experience. I also want to be able to easily back up my bookmarks.
+As a user, I want a beautiful, modern, and minimal application to organize my bookmarks into a nested folder structure. I want to interact with my bookmarks through a sleek, themeable interface that works flawlessly on both my desktop and phone. The application's state should be stored in a single file that I can directly edit, with any changes I make being reflected in the app, and vice-versa, ensuring my data is always in sync and easy to manage.
 
 ### Acceptance Scenarios
-1.  **Given** I have the application open, **When** I create a new folder, **Then** it appears in the folder tree.
-2.  **Given** I have a folder selected, **When** I add a new bookmark with a URL, **Then** the bookmark appears inside that folder.
-3.  **Given** I am viewing a folder with bookmarks, **When** I switch to the tile view, **Then** the bookmarks are displayed as a grid of tiles.
-4.  **Given** a bookmark does not have an image URL, **When** it is displayed, **Then** the favicon of the bookmarked page is shown.
-5.  **Given** I have made changes to my bookmarks, **When** I check the flat file, **Then** my changes are reflected in the file.
+1.  **Given** I have the application open, **When** I create a new folder using the UI, **Then** it appears in the folder tree and is saved to the flat file.
+2.  **Given** I have a folder selected, **When** I add a new bookmark with a URL, **Then** the bookmark appears inside that folder and is saved to the flat file.
+3.  **Given** I manually edit the flat file to add a new bookmark, **When** I reload the application, **Then** the new bookmark is displayed.
+4.  **Given** I am viewing the application on a desktop, **When** I resize the window to a mobile screen size, **Then** the layout adjusts to a single-column, responsive view.
+5.  **Given** the application supports multiple themes, **When** I switch from the default theme to another, **Then** the application's color scheme and appearance updates instantly.
+6.  **Given** I am viewing a folder with bookmarks, **When** I switch to the tile view, **Then** the bookmarks are displayed as a grid of tiles.
+7.  **Given** a bookmark does not have an image URL, **When** it is displayed, **Then** the favicon of the bookmarked page is shown.
 
 ### Edge Cases
 -   What happens when a URL is invalid?
 -   What happens when a favicon for a URL cannot be fetched?
 -   How does the system handle very deep folder nesting?
 -   What happens if the flat file is corrupted or malformed?
+-   What happens if the file is edited by both the UI and an external editor simultaneously? The last write wins; this is an unsupported edge case.
 
 ---
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
--   **FR-001**: System MUST allow users to create, rename, and delete folders.
--   **FR--002**: System MUST allow folders to be nested within other folders to an arbitrary depth.
--   **FR-003**: System MUST allow users to add, edit, and delete bookmarks within folders.
+-   **FR-001**: System MUST allow users to create, rename, and delete folders via the UI.
+-   **FR-002**: System MUST allow folders to be nested within other folders to an arbitrary depth.
+-   **FR-003**: System MUST allow users to add, edit, and delete bookmarks within folders via the UI.
 -   **FR-004**: Each bookmark MUST store a URL and an optional image URL.
 -   **FR-005**: System MUST provide a file tree view to navigate the folder structure.
 -   **FR-006**: System MUST provide a tile view to display bookmarks within a folder.
 -   **FR-007**: If a bookmark's image URL is not provided, the system MUST attempt to fetch and display the favicon of the webpage.
--   **FR-008**: All application state (folders and bookmarks) MUST be persisted in a single, flat file.
--   **FR-009**: The system MUST read from and write to this flat file to manage state.
+-   **FR-008**: All application state (folders and bookmarks) MUST be persisted in a single, flat file, which serves as the single source of truth.
+-   **FR-009**: Changes made in the UI MUST be immediately saved to the flat file.
+-   **FR-010**: The application MUST be able to reload and reflect any changes made directly to the flat file.
+-   **FR-011**: The application's UI MUST be modern, beautiful, and minimal, modeled after Vercel/shadcn design standards.
+-   **FR-012**: The application MUST be themeable and include a pre-defined set of themes.
+-   **FR-013**: The application's layout MUST be responsive, adapting to screen sizes from desktop to mobile.
 
 ### Key Entities *(include if feature involves data)*
 -   **Folder**: Represents a container for bookmarks and other folders. It has a name and can have a parent folder.
