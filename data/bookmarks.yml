@@ -1,0 +1,15 @@
+folders:
+  - id: eb405c03-22ab-4287-9187-1b32cf27c447
+    name: F1
+    bookmarks:
+      - id: 485e0326-f0d1-4d49-829b-6a734eeaf1e7
+        url: https://www.new-bookmark.com/1757477488520
+        name: New
+      - id: df1f1f67-0b88-4b99-9f49-ebf1a273900f
+        name: Foo
+        url: https://google.com
+    folders: []
+  - id: 6a7227e7-570b-4d82-b93c-284993887240
+    name: F2
+    bookmarks: []
+    folders: []
