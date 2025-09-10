@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 import { Folder, Bookmark } from '@/lib/types'
 import { useBookmarks } from '@/context/BookmarkContext'
 import { TileView } from '@/components/TileView'
+import { TreeView } from '@/components/TreeView'
+import { ViewSwitcher } from '@/components/ViewSwitcher'
 import { AddBookmarkDialog } from '@/components/AddBookmarkDialog'
 import { AddFolderDialog } from '@/components/AddFolderDialog'
 import { ModeToggle } from '@/components/theme-toggle'
@@ -17,10 +19,12 @@ import {
 import { Button } from '@/components/ui/button'
 
 export default function Home() {
-  const { folders, loading, error, addFolder, addBookmark } = useBookmarks()
+  const { folders, bookmarks, loading, error, addFolder, addBookmark } =
+    useBookmarks()
   const [isAddingBookmark, setIsAddingBookmark] = useState(false)
   const [isAddingFolder, setIsAddingFolder] = useState(false)
   const [currentPath, setCurrentPath] = useState<Folder[]>([])
+  const [viewMode, setViewMode] = useState<'grid' | 'tree'>('grid')
 
   const handleAddBookmarkClick = () => {
     setIsAddingBookmark(true)
@@ -50,9 +54,7 @@ export default function Home() {
   const handleSaveBookmark = (bookmark: Omit<Bookmark, 'id'>) => {
     const parentId =
       currentPath.length > 0 ? currentPath[currentPath.length - 1].id : null
-    if (parentId) {
-      addBookmark(parentId, bookmark)
-    }
+    addBookmark(parentId, bookmark)
     handleCloseDialogs()
   }
 
@@ -79,13 +81,12 @@ export default function Home() {
         folders: currentFolder.folders || [],
         bookmarks: currentFolder.bookmarks || [],
       }
-    : { folders, bookmarks: [] }
-
-  const isInFolder = currentPath.length > 0
+    : { folders, bookmarks }
 
   return (
     <main className="flex h-screen flex-col">
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-4 flex gap-2">
+        <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} />
         <ModeToggle />
       </div>
 
@@ -114,20 +115,25 @@ export default function Home() {
           </Breadcrumb>
 
           <div className="mb-4 flex gap-2">
-            {isInFolder && (
-              <Button onClick={handleAddBookmarkClick}>Add Bookmark</Button>
-            )}
+            <Button onClick={handleAddBookmarkClick}>Add Bookmark</Button>
             <Button onClick={handleAddFolderClick} variant="outline">
               Add Folder
             </Button>
           </div>
         </div>
 
-        <TileView
-          folders={currentContents.folders}
-          bookmarks={currentContents.bookmarks}
-          onFolderClick={handleFolderClick}
-        />
+        {viewMode === 'grid' ? (
+          <TileView
+            folders={currentContents.folders}
+            bookmarks={currentContents.bookmarks}
+            onFolderClick={handleFolderClick}
+          />
+        ) : (
+          <TreeView
+            folders={currentContents.folders}
+            bookmarks={currentContents.bookmarks}
+          />
+        )}
       </div>
       {isAddingBookmark && (
         <AddBookmarkDialog

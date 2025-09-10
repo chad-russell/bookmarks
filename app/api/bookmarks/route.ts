@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { readBookmarks, writeBookmarks } from '@/lib/file-io';
 import path from 'path';
-import { Folder } from '@/lib/types';
+import { Folder, Bookmark } from '@/lib/types';
 
 const bookmarksFilePath = path.join(process.cwd(), 'data', 'bookmarks.yml');
 
@@ -17,7 +17,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const body: { folders: Folder[] } = await request.json();
+    const body: { folders: Folder[], bookmarks: Bookmark[] } = await request.json();
     await writeBookmarks(body, bookmarksFilePath);
     return NextResponse.json({ message: 'Bookmarks saved successfully' });
   } catch (error) {
