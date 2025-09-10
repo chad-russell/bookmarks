@@ -43,7 +43,7 @@ export const ResponsiveModal = ({ isOpen, onClose, title, children }: Responsive
         <DrawerHeader>
           <DrawerTitle>{title}</DrawerTitle>
         </DrawerHeader>
-        {children}
+        <div className="p-4">{children}</div>
       </DrawerContent>
     </Drawer>
   );

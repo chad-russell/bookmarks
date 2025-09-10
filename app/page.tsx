@@ -1,52 +1,68 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { FileTreeView } from '@/components/FileTreeView'
-import { TileView } from '@/components/TileView'
-import { Folder } from '@/lib/types'
+import React, { useState } from 'react'
+import { Folder, Bookmark } from '@/lib/types'
 import { useBookmarks } from '@/context/BookmarkContext'
-import {
-  ResizablePanelGroup,
-  ResizablePanel,
-  ResizableHandle,
-} from '@/components/ui/resizable'
-
-import { AddBookmarkForm } from '@/components/AddBookmarkForm'
+import { TileView } from '@/components/TileView'
+import { AddBookmarkDialog } from '@/components/AddBookmarkDialog'
+import { AddFolderDialog } from '@/components/AddFolderDialog'
 import { ModeToggle } from '@/components/theme-toggle'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+import { Button } from '@/components/ui/button'
 
 export default function Home() {
-  const { folders, loading, error, addBookmark, addFolder } = useBookmarks()
-  const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
+  const { folders, loading, error, addFolder, addBookmark } = useBookmarks()
+  const [isAddingBookmark, setIsAddingBookmark] = useState(false)
+  const [isAddingFolder, setIsAddingFolder] = useState(false)
+  const [currentPath, setCurrentPath] = useState<Folder[]>([])
 
-  // Effect to select the first folder once data is loaded
-  useEffect(() => {
-    if (folders.length > 0 && !selectedFolder) {
-      setSelectedFolder(folders[0])
-    }
-  }, [folders])
-
-  const handleSelectFolder = (folder: Folder) => {
-    setSelectedFolder(folder)
+  const handleAddBookmarkClick = () => {
+    setIsAddingBookmark(true)
   }
 
-  const handleAddBookmark = () => {
-    if (selectedFolder) {
-      const newBookmark = { url: `https://www.new-bookmark.com/${Date.now()}` }
-      addBookmark(selectedFolder.id, newBookmark)
-    }
+  const handleAddFolderClick = () => {
+    setIsAddingFolder(true)
   }
 
-  const handleAddFolder = () => {
+  const handleCloseDialogs = () => {
+    setIsAddingBookmark(false)
+    setIsAddingFolder(false)
+  }
+
+  const handleSaveFolder = (name: string) => {
     const newFolder = {
-      name: `New Folder ${Date.now()}`,
+      name,
       bookmarks: [],
       folders: [],
     }
-    // For simplicity, this adds a root folder. A real implementation would handle nesting.
-    addFolder(null, newFolder)
+    const parentId =
+      currentPath.length > 0 ? currentPath[currentPath.length - 1].id : null
+    addFolder(parentId, newFolder)
+    handleCloseDialogs()
   }
 
-  const bookmarksToShow = selectedFolder?.bookmarks || []
+  const handleSaveBookmark = (bookmark: Omit<Bookmark, 'id'>) => {
+    const parentId =
+      currentPath.length > 0 ? currentPath[currentPath.length - 1].id : null
+    if (parentId) {
+      addBookmark(parentId, bookmark)
+    }
+    handleCloseDialogs()
+  }
+
+  const handleFolderClick = (folder: Folder) => {
+    setCurrentPath([...currentPath, folder])
+  }
+
+  const handleBreadcrumbClick = (index: number) => {
+    setCurrentPath(currentPath.slice(0, index + 1))
+  }
 
   if (loading) {
     return <div>Loading...</div>
@@ -56,41 +72,75 @@ export default function Home() {
     return <div>Error: {error}</div>
   }
 
+  const currentFolder =
+    currentPath.length > 0 ? currentPath[currentPath.length - 1] : null
+  const currentContents = currentFolder
+    ? {
+        folders: currentFolder.folders || [],
+        bookmarks: currentFolder.bookmarks || [],
+      }
+    : { folders, bookmarks: [] }
+
+  const isInFolder = currentPath.length > 0
+
   return (
-    <main>
+    <main className="flex h-screen flex-col">
       <div className="absolute top-4 right-4">
         <ModeToggle />
       </div>
-      <main className="flex h-screen">
-        <div className="w-72 border-r p-4">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-bold">Folders</h2>
-            <button
-              onClick={handleAddFolder}
-              className="rounded bg-gray-200 px-2 py-1 text-xs"
-            >
-              +
-            </button>
+
+      <div className="flex-1 overflow-auto p-6">
+        <div className="mb-6">
+          <Breadcrumb className="mb-4">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink onClick={() => setCurrentPath([])}>
+                  Bookmarks
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              {currentPath.map((folder, index) => (
+                <React.Fragment key={`path-${index}`}>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem key={folder.id}>
+                    <BreadcrumbLink
+                      onClick={() => handleBreadcrumbClick(index)}
+                    >
+                      {folder.name}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                </React.Fragment>
+              ))}
+            </BreadcrumbList>
+          </Breadcrumb>
+
+          <div className="mb-4 flex gap-2">
+            {isInFolder && (
+              <Button onClick={handleAddBookmarkClick}>Add Bookmark</Button>
+            )}
+            <Button onClick={handleAddFolderClick} variant="outline">
+              Add Folder
+            </Button>
           </div>
-          <FileTreeView folders={folders} onSelectFolder={handleSelectFolder} />
         </div>
-        <div className="flex-1 p-4">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-bold">
-              {selectedFolder ? selectedFolder.name : 'Select a folder'}
-            </h2>
-          </div>
-          {selectedFolder && (
-            <div className="mb-4">
-              <AddBookmarkForm
-                folderId={selectedFolder.id}
-                onClose={() => {}}
-              />
-            </div>
-          )}
-          <TileView bookmarks={bookmarksToShow} />
-        </div>
-      </main>
+
+        <TileView
+          folders={currentContents.folders}
+          bookmarks={currentContents.bookmarks}
+          onFolderClick={handleFolderClick}
+        />
+      </div>
+      {isAddingBookmark && (
+        <AddBookmarkDialog
+          onSave={handleSaveBookmark}
+          onClose={handleCloseDialogs}
+        />
+      )}
+      {isAddingFolder && (
+        <AddFolderDialog
+          onSave={handleSaveFolder}
+          onClose={handleCloseDialogs}
+        />
+      )}
     </main>
   )
 }

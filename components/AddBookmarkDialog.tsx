@@ -1,41 +1,35 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Bookmark } from '@/lib/types'
+import { useState } from 'react'
 import { ResponsiveModal } from './ResponsiveModal'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
-
 import { DialogFooter } from './ui/dialog'
+import { Bookmark } from '@/lib/types'
 
-interface EditBookmarkDialogProps {
-  bookmark: Bookmark
-  onSave: (updatedBookmark: Bookmark) => void
+interface AddBookmarkDialogProps {
+  onSave: (bookmark: Omit<Bookmark, 'id'>) => void
   onClose: () => void
 }
 
-export const EditBookmarkDialog = ({
-  bookmark,
+export const AddBookmarkDialog = ({
   onSave,
   onClose,
-}: EditBookmarkDialogProps) => {
-  const [name, setName] = useState(bookmark.name || '')
-  const [url, setUrl] = useState(bookmark.url)
-
-  useEffect(() => {
-    setName(bookmark.name || '')
-    setUrl(bookmark.url)
-  }, [bookmark])
+}: AddBookmarkDialogProps) => {
+  const [name, setName] = useState('')
+  const [url, setUrl] = useState('')
 
   const handleSave = () => {
-    onSave({ ...bookmark, name, url })
+    if (url.trim()) {
+      onSave({ name: name.trim() || undefined, url: url.trim() })
+    }
   }
 
   return (
-    <ResponsiveModal isOpen={true} onClose={onClose} title="Edit Bookmark">
-      <div className="mb-6 grid gap-4">
-        <div className="grid gap-2 md:grid-cols-4 md:items-center md:gap-4">
+    <ResponsiveModal isOpen={true} onClose={onClose} title="Add Bookmark">
+      <div className="grid gap-4">
+        <div className="mt-4 grid gap-2 md:grid-cols-4 md:items-center md:gap-4">
           <Label htmlFor="name" className="md:text-right">
             Name
           </Label>
