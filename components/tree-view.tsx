@@ -5,6 +5,11 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion'
 import { ChevronRight } from 'lucide-react'
 import { cva } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu'
 
 const treeVariants = cva(
   'group hover:before:opacity-100 before:absolute before:rounded-lg before:left-0 px-2 before:w-full before:opacity-0 before:bg-accent/70 before:h-[2rem] before:-z-10',
@@ -20,16 +25,18 @@ const dragOverVariants = cva(
 
 interface TreeDataItem {
   id: string
-  name: string
-  icon?: any
-  selectedIcon?: any
-  openIcon?: any
+  name: React.ReactNode
+  icon?: React.ReactNode | React.ComponentType<{ className?: string }>
+  selectedIcon?: React.ReactNode | React.ComponentType<{ className?: string }>
+  openIcon?: React.ReactNode | React.ComponentType<{ className?: string }>
   children?: TreeDataItem[]
   actions?: React.ReactNode
   onClick?: () => void
   draggable?: boolean
   droppable?: boolean
   disabled?: boolean
+  data?: unknown
+  contextMenu?: React.ReactNode
 }
 
 type TreeProps = React.HTMLAttributes<HTMLDivElement> & {
@@ -37,8 +44,8 @@ type TreeProps = React.HTMLAttributes<HTMLDivElement> & {
   initialSelectedItemId?: string
   onSelectChange?: (item: TreeDataItem | undefined) => void
   expandAll?: boolean
-  defaultNodeIcon?: any
-  defaultLeafIcon?: any
+  defaultNodeIcon?: React.ComponentType<{ className?: string }>
+  defaultLeafIcon?: React.ComponentType<{ className?: string }>
   onDocumentDrag?: (sourceItem: TreeDataItem, targetItem: TreeDataItem) => void
 }
 
@@ -89,6 +96,8 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeProps>(
       [draggedItem, onDocumentDrag],
     )
 
+    
+
     const expandedItemIds = React.useMemo(() => {
       if (!initialSelectedItemId) {
         return [] as string[]
@@ -136,7 +145,7 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeProps>(
         />
         <div
           className="h-[48px] w-full"
-          onDrop={(e) => {
+          onDrop={() => {
             handleDrop({ id: '', name: 'parent_div' })
           }}
         ></div>
@@ -150,8 +159,8 @@ type TreeItemProps = TreeProps & {
   selectedItemId?: string
   handleSelectChange: (item: TreeDataItem | undefined) => void
   expandedItemIds: string[]
-  defaultNodeIcon?: any
-  defaultLeafIcon?: any
+  defaultNodeIcon?: React.ComponentType<{ className?: string }>
+  defaultLeafIcon?: React.ComponentType<{ className?: string }>
   handleDragStart?: (item: TreeDataItem) => void
   handleDrop?: (item: TreeDataItem) => void
   draggedItem: TreeDataItem | null
@@ -229,8 +238,8 @@ const TreeNode = ({
   handleSelectChange: (item: TreeDataItem | undefined) => void
   expandedItemIds: string[]
   selectedItemId?: string
-  defaultNodeIcon?: any
-  defaultLeafIcon?: any
+  defaultNodeIcon?: React.ComponentType<{ className?: string }>
+  defaultLeafIcon?: React.ComponentType<{ className?: string }>
   handleDragStart?: (item: TreeDataItem) => void
   handleDrop?: (item: TreeDataItem) => void
   draggedItem: TreeDataItem | null
@@ -273,8 +282,11 @@ const TreeNode = ({
       onValueChange={(s) => setValue(s)}
     >
       <AccordionPrimitive.Item value={item.id}>
-        <AccordionTrigger
+        <ContextMenu>
+          <ContextMenuTrigger asChild>
+            <AccordionTrigger
           className={cn(
+            'w-full', // Add this line
             treeVariants(),
             selectedItemId === item.id && selectedTreeVariants(),
             isDragOver && dragOverVariants(),
@@ -295,11 +307,16 @@ const TreeNode = ({
             isOpen={value.includes(item.id)}
             default={defaultNodeIcon}
           />
-          <span className="truncate text-sm">{item.name}</span>
+          <div className="truncate text-sm">{item.name}</div>
           <TreeActions isSelected={selectedItemId === item.id}>
             {item.actions}
           </TreeActions>
-        </AccordionTrigger>
+            </AccordionTrigger>
+          </ContextMenuTrigger>
+          <ContextMenuContent>
+            {item.contextMenu}
+          </ContextMenuContent>
+        </ContextMenu>
         <AccordionContent className="ml-4 border-l pl-1">
           <TreeItem
             data={item.children ? item.children : item}
@@ -324,7 +341,7 @@ const TreeLeaf = React.forwardRef<
     item: TreeDataItem
     selectedItemId?: string
     handleSelectChange: (item: TreeDataItem | undefined) => void
-    defaultLeafIcon?: any
+    defaultLeafIcon?: React.ComponentType<{ className?: string }>
     handleDragStart?: (item: TreeDataItem) => void
     handleDrop?: (item: TreeDataItem) => void
     draggedItem: TreeDataItem | null
@@ -379,38 +396,46 @@ const TreeLeaf = React.forwardRef<
     }
 
     return (
-      <div
-        ref={ref}
-        className={cn(
-          'ml-5 flex cursor-pointer items-center py-2 text-left before:right-1',
-          treeVariants(),
-          className,
-          selectedItemId === item.id && selectedTreeVariants(),
-          isDragOver && dragOverVariants(),
-          item.disabled && 'pointer-events-none cursor-not-allowed opacity-50',
-        )}
-        onClick={() => {
-          if (item.disabled) return
-          handleSelectChange(item)
-          item.onClick?.()
-        }}
-        draggable={!!item.draggable && !item.disabled}
-        onDragStart={onDragStart}
-        onDragOver={onDragOver}
-        onDragLeave={onDragLeave}
-        onDrop={onDrop}
-        {...props}
-      >
-        <TreeIcon
-          item={item}
-          isSelected={selectedItemId === item.id}
-          default={defaultLeafIcon}
-        />
-        <span className="flex-grow truncate text-sm">{item.name}</span>
-        <TreeActions isSelected={selectedItemId === item.id && !item.disabled}>
-          {item.actions}
-        </TreeActions>
-      </div>
+      <ContextMenu>
+        <ContextMenuTrigger asChild>
+          <div
+            ref={ref}
+            className={cn(
+              'w-full', // Add this line
+              'ml-5 flex cursor-pointer items-center py-2 text-left before:right-1',
+              treeVariants(),
+              className,
+              selectedItemId === item.id && selectedTreeVariants(),
+              isDragOver && dragOverVariants(),
+              item.disabled && 'pointer-events-none cursor-not-allowed opacity-50',
+            )}
+            onClick={() => {
+              if (item.disabled) return
+              handleSelectChange(item)
+              item.onClick?.()
+            }}
+            draggable={!!item.draggable && !item.disabled}
+            onDragStart={onDragStart}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onDrop={onDrop}
+            {...props}
+          >
+            <TreeIcon
+              item={item}
+              isSelected={selectedItemId === item.id}
+              default={defaultLeafIcon}
+            />
+            <span className="flex-grow truncate text-sm">{item.name}</span>
+            <TreeActions isSelected={selectedItemId === item.id && !item.disabled}>
+              {item.actions}
+            </TreeActions>
+          </div>
+        </ContextMenuTrigger>
+        <ContextMenuContent>
+          {item.contextMenu}
+        </ContextMenuContent>
+      </ContextMenu>
     )
   },
 )
@@ -462,21 +487,27 @@ const TreeIcon = ({
   item: TreeDataItem
   isOpen?: boolean
   isSelected?: boolean
-  default?: any
+  default?: React.ComponentType<{ className?: string }> | React.ReactElement
 }) => {
-  let Icon = defaultIcon
+  let Icon: React.ReactElement | React.ComponentType<{ className?: string }>
+    | undefined = undefined
+  if (defaultIcon) {
+    Icon = defaultIcon
+  }
   if (isSelected && item.selectedIcon) {
-    Icon = item.selectedIcon
+    Icon = item.selectedIcon as React.ComponentType<{ className?: string }> | React.ReactElement
   } else if (isOpen && item.openIcon) {
-    Icon = item.openIcon
+    Icon = item.openIcon as React.ComponentType<{ className?: string }> | React.ReactElement
   } else if (item.icon) {
-    Icon = item.icon
+    Icon = item.icon as React.ComponentType<{ className?: string }> | React.ReactElement
   }
   return Icon ? (
     React.isValidElement(Icon) ? (
       Icon
     ) : (
-      <Icon className="mr-2 h-4 w-4 shrink-0" />
+      React.createElement(Icon as React.ComponentType<{ className?: string }>, {
+        className: 'mr-2 h-4 w-4 shrink-0',
+      })
     )
   ) : (
     <></>

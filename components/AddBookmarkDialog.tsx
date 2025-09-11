@@ -19,10 +19,15 @@ export const AddBookmarkDialog = ({
 }: AddBookmarkDialogProps) => {
   const [name, setName] = useState('')
   const [url, setUrl] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
 
   const handleSave = () => {
     if (url.trim()) {
-      onSave({ name: name.trim() || undefined, url: url.trim() })
+      onSave({ 
+        name: name.trim() || undefined, 
+        url: url.trim(),
+        imageUrl: imageUrl.trim() || undefined
+      })
     }
   }
 
@@ -48,6 +53,17 @@ export const AddBookmarkDialog = ({
             id="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            className="md:col-span-3"
+          />
+        </div>
+        <div className="grid gap-2 md:grid-cols-4 md:items-center md:gap-4">
+          <Label htmlFor="imageUrl" className="md:text-right">
+            Image URL
+          </Label>
+          <Input
+            id="imageUrl"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
             className="md:col-span-3"
           />
         </div>

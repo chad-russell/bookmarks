@@ -15,6 +15,7 @@ export const DeleteConfirmationDialog = ({ itemName, onConfirm, onClose }: Delet
   return (
     <ResponsiveModal isOpen={true} onClose={onClose} title="Confirm Deletion">
       <div className="grid gap-4">
+        {/* eslint-disable-next-line react/no-unescaped-entities */}
         <p>Are you sure you want to delete "{itemName}"?</p>
       </div>
       <DialogFooter>

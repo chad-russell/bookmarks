@@ -8,7 +8,6 @@ import {
   Card,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '@/components/ui/card'
 import {
   ContextMenu,
@@ -18,6 +17,12 @@ import {
 } from '@/components/ui/context-menu'
 import { EditBookmarkDialog } from './EditBookmarkDialog'
 import { DeleteConfirmationDialog } from './DeleteConfirmationDialog'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 interface BookmarkTileProps {
   bookmark: Bookmark
@@ -42,29 +47,35 @@ export const BookmarkTile = ({ bookmark }: BookmarkTileProps) => {
     <>
       <ContextMenu>
         <ContextMenuTrigger asChild>
-          <Card className="hover:bg-accent w-full max-w-sm cursor-pointer transition-colors">
+          <Card className="hover:bg-accent h-full w-full max-w-sm cursor-pointer transition-colors">
             <a
               href={bookmark.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="block"
+              className="block h-full"
             >
-              <CardHeader className="p-4">
-                <div className="flex items-center gap-3">
+              <CardHeader className="flex h-full items-center px-3">
+                <div className="flex w-full items-center gap-3">
                   <img
                     src={bookmark.imageUrl || getFaviconUrl(bookmark.url)}
                     alt={`Favicon for ${bookmark.name || bookmark.url}`}
                     className="h-8 w-8 flex-shrink-0 rounded-md"
                   />
                   <div className="min-w-0 flex-1">
-                    <CardTitle className="truncate text-sm leading-none font-medium">
-                      {bookmark.name || bookmark.url}
-                    </CardTitle>
-                    {bookmark.name && (
-                      <CardDescription className="text-muted-foreground truncate text-xs">
-                        {bookmark.url}
-                      </CardDescription>
-                    )}
+                    <TooltipProvider delayDuration={500}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div>
+                            <CardTitle className="truncate text-sm leading-none font-medium">
+                              {bookmark.name || bookmark.url}
+                            </CardTitle>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{bookmark.url}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </div>
               </CardHeader>

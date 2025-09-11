@@ -5,9 +5,12 @@ folders:
       - id: 485e0326-f0d1-4d49-829b-6a734eeaf1e7
         url: https://www.new-bookmark.com/1757477488520
         name: New
+        imageUrl: >-
+          data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik04LjUgMTEuNUgxMHYtNkg3VjdoMS41em0zLjUgMGgzLjVxLjQyNSAwIC43MTMtLjI4OHQuMjg3LS43MTJWOXEwLS40MjUtLjI4OC0uNzEyVDE1LjUgOGgtMlY3aDNWNS41SDEyVjloM3YxaC0zem0tNiA3aDEuNVYxNGgxdjNIMTB2LTNoMXY0LjVoMS41di01cTAtLjQyNS0uMjg4LS43MTJUMTEuNSAxMi41SDdxLS40MjUgMC0uNzEyLjI4OFQ2IDEzLjV6bTcuNSAwSDE1VjE3aDJxLjQyNSAwIC43MTMtLjI4OFQxOCAxNnYtMi41cTAtLjQyNS0uMjg4LS43MTJUMTcgMTIuNWgtMy41em0xLjUtM1YxNGgxLjV2MS41ek01IDIxcS0uODI1IDAtMS40MTItLjU4N1QzIDE5VjVxMC0uODI1LjU4OC0xLjQxMlQ1IDNoMTRxLjgyNSAwIDEuNDEzLjU4OFQyMSA1djE0cTAgLjgyNS0uNTg3IDEuNDEzVDE5IDIxem0wLTJoMTRWNUg1ek01IDV2MTR6Ii8+PC9zdmc+
       - id: df1f1f67-0b88-4b99-9f49-ebf1a273900f
-        name: Foo
+        name: Food
         url: https://google.com
+        imageUrl: ''
     folders:
       - id: 4ca78ede-5db0-4cb1-84c4-e7e9beba22c9
         name: F
@@ -21,3 +24,4 @@ folders:
         name: F
         bookmarks: []
         folders: []
+bookmarks: []

@@ -22,14 +22,16 @@ export const EditBookmarkDialog = ({
 }: EditBookmarkDialogProps) => {
   const [name, setName] = useState(bookmark.name || '')
   const [url, setUrl] = useState(bookmark.url)
+  const [imageUrl, setImageUrl] = useState(bookmark.imageUrl || '')
 
   useEffect(() => {
     setName(bookmark.name || '')
     setUrl(bookmark.url)
+    setImageUrl(bookmark.imageUrl || '')
   }, [bookmark])
 
   const handleSave = () => {
-    onSave({ ...bookmark, name, url })
+    onSave({ ...bookmark, name, url, imageUrl })
   }
 
   return (
@@ -54,6 +56,17 @@ export const EditBookmarkDialog = ({
             id="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            className="md:col-span-3"
+          />
+        </div>
+        <div className="grid gap-2 md:grid-cols-4 md:items-center md:gap-4">
+          <Label htmlFor="imageUrl" className="md:text-right">
+            Image URL
+          </Label>
+          <Input
+            id="imageUrl"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
             className="md:col-span-3"
           />
         </div>

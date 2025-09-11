@@ -12,12 +12,7 @@ import { EditFolderDialog } from './EditFolderDialog'
 import { DeleteConfirmationDialog } from './DeleteConfirmationDialog'
 import { useBookmarks } from '@/context/BookmarkContext'
 import { useState } from 'react'
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Folder } from 'lucide-react'
 
 interface TileViewProps {
@@ -72,15 +67,15 @@ export const TileView = ({
           <ContextMenu key={folder.id}>
             <ContextMenuTrigger asChild>
               <Card
-                className="hover:bg-accent w-full max-w-sm cursor-pointer transition-colors"
+                className="hover:bg-accent h-full w-full max-w-sm cursor-pointer transition-colors"
                 onClick={(e) => {
                   e.stopPropagation()
                   onFolderClick?.(folder)
                 }}
               >
-                <div className="p-4">
-                  <div className="flex flex-row items-center space-x-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+                <div className="flex h-full items-center px-4">
+                  <div className="flex w-full flex-row items-center space-x-3">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-blue-100">
                       <Folder className="h-5 w-5 text-blue-600" />
                     </div>
                     <div className="min-w-0 flex-1">

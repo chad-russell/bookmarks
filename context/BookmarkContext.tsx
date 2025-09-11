@@ -122,8 +122,8 @@ export const BookmarkProvider = ({ children }: { children: ReactNode }) => {
         const migratedBookmarks = assignIds(data.bookmarks || []) as Bookmark[]
         setFolders(migratedFolders)
         setBookmarks(migratedBookmarks)
-      } catch (err) {
-        setError(err.message)
+      } catch (err: unknown) {
+        setError((err as Error).message)
       } finally {
         setLoading(false)
       }
@@ -146,8 +146,8 @@ export const BookmarkProvider = ({ children }: { children: ReactNode }) => {
       }
       setFolders(updatedData.folders)
       setBookmarks(updatedData.bookmarks)
-    } catch (err) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError((err as Error).message)
     }
   }
 
