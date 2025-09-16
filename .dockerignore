@@ -71,7 +71,6 @@ prettier.config.*
 # Build tools config (already copied via package.json)
 postcss.config.mjs
 tailwind.config.*
-tsconfig.json
 components.json
 
 # Temporary files
