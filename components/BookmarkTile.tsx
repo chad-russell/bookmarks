@@ -18,6 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import Image from 'next/image'
 
 interface BookmarkTileProps {
   bookmark: Bookmark
@@ -27,7 +28,6 @@ export const BookmarkTile = ({ bookmark }: BookmarkTileProps) => {
   const { updateBookmark, deleteBookmark } = useBookmarks()
   const [isEditing, setIsEditing] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
 
   const handleEdit = (updatedBookmark: Bookmark) => {
     updateBookmark(updatedBookmark.id, { ...updatedBookmark })
@@ -41,7 +41,7 @@ export const BookmarkTile = ({ bookmark }: BookmarkTileProps) => {
 
   return (
     <>
-      <ContextMenu open={menuOpen} onOpenChange={setMenuOpen}>
+      <ContextMenu>
         <ContextMenuTrigger asChild>
           <Card className="hover:bg-accent h-full w-full max-w-sm cursor-pointer transition-colors">
             <a
@@ -52,7 +52,7 @@ export const BookmarkTile = ({ bookmark }: BookmarkTileProps) => {
             >
               <CardHeader className="flex h-full items-center px-3">
                 <div className="flex w-full items-center gap-3">
-                  <img
+                  <Image
                     src={bookmark.imageUrl || getFaviconUrl(bookmark.url)}
                     alt={`Favicon for ${bookmark.name || bookmark.url}`}
                     className="h-8 w-8 flex-shrink-0 rounded-md"
@@ -79,8 +79,8 @@ export const BookmarkTile = ({ bookmark }: BookmarkTileProps) => {
           </Card>
         </ContextMenuTrigger>
         <ContextMenuContent>
-          <ContextMenuItem onSelect={() => { setMenuOpen(false); setIsEditing(true) }}>Edit</ContextMenuItem>
-          <ContextMenuItem onSelect={() => { setMenuOpen(false); setIsDeleting(true) }} variant="destructive">Delete</ContextMenuItem>
+          <ContextMenuItem onSelect={() => setIsEditing(true)}>Edit</ContextMenuItem>
+          <ContextMenuItem onSelect={() => setIsDeleting(true)} variant="destructive">Delete</ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
       {isEditing && (

@@ -2,6 +2,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Image from 'next/image'
 import {
   TreeView as ShadcnTreeView,
   TreeDataItem,
@@ -14,11 +15,12 @@ import { EditBookmarkDialog } from './EditBookmarkDialog'
 import { DeleteConfirmationDialog } from './DeleteConfirmationDialog'
 import { useBookmarks } from '@/context/BookmarkContext'
 import { EditFolderDialog } from './EditFolderDialog'
-
 const BookmarkIcon = ({ bookmark }: { bookmark: Bookmark }) => (
-  <img
+  <Image
     src={bookmark.imageUrl || getFaviconUrl(bookmark.url)}
     alt={`Favicon for ${bookmark.name || bookmark.url}`}
+    width={16}
+    height={16}
     className="mr-2 h-4 w-4 shrink-0 rounded-sm"
   />
 )
