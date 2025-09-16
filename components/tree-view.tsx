@@ -5,11 +5,6 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion'
 import { ChevronRight } from 'lucide-react'
 import { cva } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuTrigger,
-} from '@/components/ui/context-menu'
 
 const treeVariants = cva(
   'group hover:before:opacity-100 before:absolute before:rounded-lg before:left-0 px-2 before:w-full before:opacity-0 before:bg-accent/70 before:h-[2rem] before:-z-10',
@@ -23,12 +18,15 @@ const dragOverVariants = cva(
   'before:opacity-100 before:bg-primary/20 text-primary-foreground',
 )
 
+type IconComponent = React.ComponentType<{ className?: string }>
+type IconProp = IconComponent | React.ReactElement
+
 interface TreeDataItem {
   id: string
   name: React.ReactNode
-  icon?: React.ReactNode | React.ComponentType<{ className?: string }>
-  selectedIcon?: React.ReactNode | React.ComponentType<{ className?: string }>
-  openIcon?: React.ReactNode | React.ComponentType<{ className?: string }>
+  icon?: IconProp
+  selectedIcon?: IconProp
+  openIcon?: IconProp
   children?: TreeDataItem[]
   actions?: React.ReactNode
   onClick?: () => void
@@ -44,9 +42,66 @@ type TreeProps = React.HTMLAttributes<HTMLDivElement> & {
   initialSelectedItemId?: string
   onSelectChange?: (item: TreeDataItem | undefined) => void
   expandAll?: boolean
-  defaultNodeIcon?: React.ComponentType<{ className?: string }>
-  defaultLeafIcon?: React.ComponentType<{ className?: string }>
+  defaultNodeIcon?: IconComponent
+  defaultLeafIcon?: IconComponent
   onDocumentDrag?: (sourceItem: TreeDataItem, targetItem: TreeDataItem) => void
+}
+
+function useDragAndDrop(
+  item: TreeDataItem,
+  draggedItem: TreeDataItem | null,
+  handleDragStart?: (item: TreeDataItem) => void,
+  handleDrop?: (item: TreeDataItem) => void,
+  disabled?: boolean,
+) {
+  const [isDragOver, setIsDragOver] = React.useState(false)
+
+  const onDragStart = (e: React.DragEvent) => {
+    if (disabled || !item.draggable) {
+      e.preventDefault()
+      return
+    }
+    e.dataTransfer.setData('text/plain', item.id)
+    handleDragStart?.(item)
+  }
+
+  const onDragOver = (e: React.DragEvent) => {
+    if (
+      item.droppable !== false &&
+      !disabled &&
+      draggedItem &&
+      draggedItem.id !== item.id
+    ) {
+      // Additional validation: don't allow dropping items on bookmarks
+      const targetData = item.data as { kind?: string; id?: string } | undefined
+      
+      if (targetData?.kind === 'bookmark') {
+        // Don't allow dropping on bookmarks
+        return
+      }
+      
+      e.preventDefault()
+      setIsDragOver(true)
+    }
+  }
+
+  const onDragLeave = () => setIsDragOver(false)
+
+  const onDrop = (e: React.DragEvent) => {
+    if (disabled) return
+    e.preventDefault()
+    setIsDragOver(false)
+    handleDrop?.(item)
+  }
+
+  return { isDragOver, onDragStart, onDragOver, onDragLeave, onDrop }
+}
+
+interface ContextMenuState {
+  isOpen: boolean
+  x: number
+  y: number
+  item: TreeDataItem | null
 }
 
 const TreeView = React.forwardRef<HTMLDivElement, TreeProps>(
@@ -71,6 +126,13 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeProps>(
     const [draggedItem, setDraggedItem] = React.useState<TreeDataItem | null>(
       null,
     )
+
+    const [contextMenu, setContextMenu] = React.useState<ContextMenuState>({
+      isOpen: false,
+      x: 0,
+      y: 0,
+      item: null,
+    })
 
     const handleSelectChange = React.useCallback(
       (item: TreeDataItem | undefined) => {
@@ -128,8 +190,39 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeProps>(
       return ids
     }, [data, expandAll, initialSelectedItemId])
 
+    const handleBackgroundClick = React.useCallback(
+      (e: React.MouseEvent<HTMLDivElement>) => {
+        if (e.currentTarget === e.target) {
+          handleSelectChange(undefined)
+        }
+      },
+      [handleSelectChange],
+    )
+
+    const containerRef = React.useRef<HTMLDivElement | null>(null)
+
+    React.useEffect(() => {
+      const handleDocumentClick = (e: MouseEvent) => {
+        const target = e.target as Element | null
+        // Close context menu
+        if (contextMenu.isOpen && target && !target.closest('.tree-context-menu')) {
+          setContextMenu({ isOpen: false, x: 0, y: 0, item: null })
+        }
+        // Handle deselection
+        if (containerRef.current && !containerRef.current.contains(target)) {
+          handleSelectChange(undefined)
+        }
+      }
+      document.addEventListener('click', handleDocumentClick)
+      return () => document.removeEventListener('click', handleDocumentClick)
+    }, [handleSelectChange, contextMenu.isOpen])
+
     return (
-      <div className={cn('relative overflow-hidden p-2', className)}>
+      <div
+        className={cn('relative overflow-hidden p-2', className)}
+        ref={containerRef}
+        onClick={handleBackgroundClick}
+      >
         <TreeItem
           data={data}
           ref={ref}
@@ -141,14 +234,40 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeProps>(
           handleDragStart={handleDragStart}
           handleDrop={handleDrop}
           draggedItem={draggedItem}
+          setContextMenu={setContextMenu}
           {...props}
         />
         <div
-          className="h-[48px] w-full"
-          onDrop={() => {
+          className="h-[48px] w-full rounded-lg border-2 border-dashed border-transparent transition-colors hover:border-muted-foreground/30 data-[dragover=true]:border-primary data-[dragover=true]:bg-primary/5"
+          onDragOver={(e) => {
+            e.preventDefault()
+            e.currentTarget.setAttribute('data-dragover', 'true')
+          }}
+          onDragLeave={(e) => {
+            e.currentTarget.setAttribute('data-dragover', 'false')
+          }}
+          onDrop={(e) => {
+            e.currentTarget.setAttribute('data-dragover', 'false')
             handleDrop({ id: '', name: 'parent_div' })
           }}
-        ></div>
+        >
+          <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+            Drop here to move to root level
+          </div>
+        </div>
+        
+        {/* Custom Context Menu */}
+        {contextMenu.isOpen && contextMenu.item && (
+          <div
+            className="tree-context-menu fixed z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md"
+            style={{
+              left: `${contextMenu.x}px`,
+              top: `${contextMenu.y}px`,
+            }}
+          >
+            {contextMenu.item.contextMenu}
+          </div>
+        )}
       </div>
     )
   },
@@ -164,6 +283,7 @@ type TreeItemProps = TreeProps & {
   handleDragStart?: (item: TreeDataItem) => void
   handleDrop?: (item: TreeDataItem) => void
   draggedItem: TreeDataItem | null
+  setContextMenu: React.Dispatch<React.SetStateAction<ContextMenuState>>
 }
 
 const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>(
@@ -179,6 +299,7 @@ const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>(
       handleDragStart,
       handleDrop,
       draggedItem,
+      setContextMenu,
       ...props
     },
     ref,
@@ -202,6 +323,7 @@ const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>(
                   handleDragStart={handleDragStart}
                   handleDrop={handleDrop}
                   draggedItem={draggedItem}
+                  setContextMenu={setContextMenu}
                 />
               ) : (
                 <TreeLeaf
@@ -212,6 +334,7 @@ const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>(
                   handleDragStart={handleDragStart}
                   handleDrop={handleDrop}
                   draggedItem={draggedItem}
+                  setContextMenu={setContextMenu}
                 />
               )}
             </li>
@@ -233,6 +356,7 @@ const TreeNode = ({
   handleDragStart,
   handleDrop,
   draggedItem,
+  setContextMenu,
 }: {
   item: TreeDataItem
   handleSelectChange: (item: TreeDataItem | undefined) => void
@@ -243,37 +367,13 @@ const TreeNode = ({
   handleDragStart?: (item: TreeDataItem) => void
   handleDrop?: (item: TreeDataItem) => void
   draggedItem: TreeDataItem | null
+  setContextMenu: React.Dispatch<React.SetStateAction<ContextMenuState>>
 }) => {
   const [value, setValue] = React.useState(
     expandedItemIds.includes(item.id) ? [item.id] : [],
   )
-  const [isDragOver, setIsDragOver] = React.useState(false)
-
-  const onDragStart = (e: React.DragEvent) => {
-    if (!item.draggable) {
-      e.preventDefault()
-      return
-    }
-    e.dataTransfer.setData('text/plain', item.id)
-    handleDragStart?.(item)
-  }
-
-  const onDragOver = (e: React.DragEvent) => {
-    if (item.droppable !== false && draggedItem && draggedItem.id !== item.id) {
-      e.preventDefault()
-      setIsDragOver(true)
-    }
-  }
-
-  const onDragLeave = () => {
-    setIsDragOver(false)
-  }
-
-  const onDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragOver(false)
-    handleDrop?.(item)
-  }
+  const { isDragOver, onDragStart, onDragOver, onDragLeave, onDrop } =
+    useDragAndDrop(item, draggedItem, handleDragStart, handleDrop)
 
   return (
     <AccordionPrimitive.Root
@@ -282,18 +382,27 @@ const TreeNode = ({
       onValueChange={(s) => setValue(s)}
     >
       <AccordionPrimitive.Item value={item.id}>
-        <ContextMenu>
-          <ContextMenuTrigger asChild>
-            <AccordionTrigger
+        <AccordionTrigger
           className={cn(
-            'w-full', // Add this line
+            'w-full',
             treeVariants(),
             selectedItemId === item.id && selectedTreeVariants(),
             isDragOver && dragOverVariants(),
           )}
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation()
             handleSelectChange(item)
             item.onClick?.()
+          }}
+          onContextMenu={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setContextMenu({
+              isOpen: true,
+              x: e.clientX,
+              y: e.clientY,
+              item: item,
+            })
           }}
           draggable={!!item.draggable}
           onDragStart={onDragStart}
@@ -311,12 +420,7 @@ const TreeNode = ({
           <TreeActions isSelected={selectedItemId === item.id}>
             {item.actions}
           </TreeActions>
-            </AccordionTrigger>
-          </ContextMenuTrigger>
-          <ContextMenuContent>
-            {item.contextMenu}
-          </ContextMenuContent>
-        </ContextMenu>
+        </AccordionTrigger>
         <AccordionContent className="ml-4 border-l pl-1">
           <TreeItem
             data={item.children ? item.children : item}
@@ -328,6 +432,7 @@ const TreeNode = ({
             handleDragStart={handleDragStart}
             handleDrop={handleDrop}
             draggedItem={draggedItem}
+            setContextMenu={setContextMenu}
           />
         </AccordionContent>
       </AccordionPrimitive.Item>
@@ -345,6 +450,7 @@ const TreeLeaf = React.forwardRef<
     handleDragStart?: (item: TreeDataItem) => void
     handleDrop?: (item: TreeDataItem) => void
     draggedItem: TreeDataItem | null
+    setContextMenu: React.Dispatch<React.SetStateAction<ContextMenuState>>
   }
 >(
   (
@@ -357,85 +463,66 @@ const TreeLeaf = React.forwardRef<
       handleDragStart,
       handleDrop,
       draggedItem,
+      setContextMenu,
       ...props
     },
     ref,
   ) => {
-    const [isDragOver, setIsDragOver] = React.useState(false)
-
-    const onDragStart = (e: React.DragEvent) => {
-      if (!item.draggable || item.disabled) {
-        e.preventDefault()
-        return
-      }
-      e.dataTransfer.setData('text/plain', item.id)
-      handleDragStart?.(item)
-    }
-
-    const onDragOver = (e: React.DragEvent) => {
-      if (
-        item.droppable !== false &&
-        !item.disabled &&
-        draggedItem &&
-        draggedItem.id !== item.id
-      ) {
-        e.preventDefault()
-        setIsDragOver(true)
-      }
-    }
-
-    const onDragLeave = () => {
-      setIsDragOver(false)
-    }
-
-    const onDrop = (e: React.DragEvent) => {
-      if (item.disabled) return
-      e.preventDefault()
-      setIsDragOver(false)
-      handleDrop?.(item)
-    }
+    const { isDragOver, onDragStart, onDragOver, onDragLeave, onDrop } =
+      useDragAndDrop(
+        item,
+        draggedItem,
+        handleDragStart,
+        handleDrop,
+        item.disabled,
+      )
 
     return (
-      <ContextMenu>
-        <ContextMenuTrigger asChild>
-          <div
-            ref={ref}
-            className={cn(
-              'w-full', // Add this line
-              'ml-5 flex cursor-pointer items-center py-2 text-left before:right-1',
-              treeVariants(),
-              className,
-              selectedItemId === item.id && selectedTreeVariants(),
-              isDragOver && dragOverVariants(),
-              item.disabled && 'pointer-events-none cursor-not-allowed opacity-50',
-            )}
-            onClick={() => {
-              if (item.disabled) return
-              handleSelectChange(item)
-              item.onClick?.()
-            }}
-            draggable={!!item.draggable && !item.disabled}
-            onDragStart={onDragStart}
-            onDragOver={onDragOver}
-            onDragLeave={onDragLeave}
-            onDrop={onDrop}
-            {...props}
-          >
-            <TreeIcon
-              item={item}
-              isSelected={selectedItemId === item.id}
-              default={defaultLeafIcon}
-            />
-            <span className="flex-grow truncate text-sm">{item.name}</span>
-            <TreeActions isSelected={selectedItemId === item.id && !item.disabled}>
-              {item.actions}
-            </TreeActions>
-          </div>
-        </ContextMenuTrigger>
-        <ContextMenuContent>
-          {item.contextMenu}
-        </ContextMenuContent>
-      </ContextMenu>
+      <div
+        ref={ref}
+        className={cn(
+          'w-full',
+          'ml-5 flex cursor-pointer items-center py-2 text-left before:right-1',
+          treeVariants(),
+          className,
+          selectedItemId === item.id && selectedTreeVariants(),
+          isDragOver && dragOverVariants(),
+          item.disabled && 'pointer-events-none cursor-not-allowed opacity-50',
+        )}
+        onClick={(e) => {
+          if (item.disabled) return
+          e.stopPropagation()
+          handleSelectChange(item)
+          item.onClick?.()
+        }}
+        onContextMenu={(e) => {
+          if (item.disabled) return
+          e.preventDefault()
+          e.stopPropagation()
+          setContextMenu({
+            isOpen: true,
+            x: e.clientX,
+            y: e.clientY,
+            item: item,
+          })
+        }}
+        draggable={!!item.draggable && !item.disabled}
+        onDragStart={onDragStart}
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
+        onDrop={onDrop}
+        {...props}
+      >
+        <TreeIcon
+          item={item}
+          isSelected={selectedItemId === item.id}
+          default={defaultLeafIcon}
+        />
+        <span className="flex-grow truncate text-sm">{item.name}</span>
+        <TreeActions isSelected={selectedItemId === item.id && !item.disabled}>
+          {item.actions}
+        </TreeActions>
+      </div>
     )
   },
 )
@@ -449,7 +536,7 @@ const AccordionTrigger = React.forwardRef<
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(
-        'flex w-full flex-1 items-center py-2 transition-all first:[&[data-state=open]>svg]:first-of-type:rotate-90',
+        'flex w-full flex-1 items-center py-2 transition-all [&[data-state=open]>svg]:rotate-90',
         className,
       )}
       {...props}

@@ -2,12 +2,7 @@
 
 import { Folder as FolderType, Bookmark } from '@/lib/types'
 import { BookmarkTile } from './BookmarkTile'
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from '@/components/ui/context-menu'
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@/components/ui/context-menu'
 import { EditFolderDialog } from './EditFolderDialog'
 import { DeleteConfirmationDialog } from './DeleteConfirmationDialog'
 import { useBookmarks } from '@/context/BookmarkContext'
@@ -89,12 +84,8 @@ export const TileView = ({
               </Card>
             </ContextMenuTrigger>
             <ContextMenuContent>
-              <ContextMenuItem onSelect={() => handleEditFolder(folder)}>
-                Edit
-              </ContextMenuItem>
-              <ContextMenuItem onSelect={() => handleDeleteFolder(folder.id)}>
-                Delete
-              </ContextMenuItem>
+              <ContextMenuItem onSelect={() => handleEditFolder(folder)}>Edit</ContextMenuItem>
+              <ContextMenuItem onSelect={() => handleDeleteFolder(folder.id)} variant="destructive">Delete</ContextMenuItem>
             </ContextMenuContent>
           </ContextMenu>
         ))}

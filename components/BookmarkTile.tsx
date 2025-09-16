@@ -9,12 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from '@/components/ui/context-menu'
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@/components/ui/context-menu'
 import { EditBookmarkDialog } from './EditBookmarkDialog'
 import { DeleteConfirmationDialog } from './DeleteConfirmationDialog'
 import {
@@ -32,6 +27,7 @@ export const BookmarkTile = ({ bookmark }: BookmarkTileProps) => {
   const { updateBookmark, deleteBookmark } = useBookmarks()
   const [isEditing, setIsEditing] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const handleEdit = (updatedBookmark: Bookmark) => {
     updateBookmark(updatedBookmark.id, { ...updatedBookmark })
@@ -45,7 +41,7 @@ export const BookmarkTile = ({ bookmark }: BookmarkTileProps) => {
 
   return (
     <>
-      <ContextMenu>
+      <ContextMenu open={menuOpen} onOpenChange={setMenuOpen}>
         <ContextMenuTrigger asChild>
           <Card className="hover:bg-accent h-full w-full max-w-sm cursor-pointer transition-colors">
             <a
@@ -83,12 +79,8 @@ export const BookmarkTile = ({ bookmark }: BookmarkTileProps) => {
           </Card>
         </ContextMenuTrigger>
         <ContextMenuContent>
-          <ContextMenuItem onClick={() => setIsEditing(true)}>
-            Edit
-          </ContextMenuItem>
-          <ContextMenuItem onClick={() => setIsDeleting(true)}>
-            Delete
-          </ContextMenuItem>
+          <ContextMenuItem onSelect={() => { setMenuOpen(false); setIsEditing(true) }}>Edit</ContextMenuItem>
+          <ContextMenuItem onSelect={() => { setMenuOpen(false); setIsDeleting(true) }} variant="destructive">Delete</ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
       {isEditing && (

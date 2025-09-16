@@ -9,7 +9,7 @@ import {
 import { Folder, Bookmark } from '@/lib/types'
 import { FolderIcon, FileIcon } from 'lucide-react'
 import { getFaviconUrl } from '@/lib/favicon'
-import { ContextMenuItem } from '@/components/ui/context-menu'
+import { FolderContextMenuItems, BookmarkContextMenuItems } from './ContextMenuItems'
 import { EditBookmarkDialog } from './EditBookmarkDialog'
 import { DeleteConfirmationDialog } from './DeleteConfirmationDialog'
 import { useBookmarks } from '@/context/BookmarkContext'
@@ -28,8 +28,8 @@ interface TreeViewProps {
   bookmarks: Bookmark[]
 }
 
-export function TreeView({ folders, bookmarks }: TreeViewProps) {
-  const { updateBookmark, deleteBookmark, updateFolder, deleteFolder } =
+export function TreeView({ folders, bookmarks, onSelectedFolderChange }: TreeViewProps & { onSelectedFolderChange?: (folderId: string | null) => void }) {
+  const { updateBookmark, deleteBookmark, updateFolder, deleteFolder, moveBookmark, moveFolder } =
     useBookmarks()
   const [editingBookmark, setEditingBookmark] = useState<Bookmark | null>(null)
   const [deletingBookmark, setDeletingBookmark] = useState<Bookmark | null>(
@@ -37,6 +37,7 @@ export function TreeView({ folders, bookmarks }: TreeViewProps) {
   )
   const [editingFolder, setEditingFolder] = useState<Folder | null>(null)
   const [deletingFolder, setDeletingFolder] = useState<Folder | null>(null)
+  const [dragError, setDragError] = useState<string | null>(null)
 
   const handleSaveBookmark = async (updatedBookmark: Bookmark) => {
     await updateBookmark(updatedBookmark.id, { ...updatedBookmark })
@@ -70,15 +71,14 @@ export function TreeView({ folders, bookmarks }: TreeViewProps) {
       id: folder.id,
       name: folder.name,
       icon: FolderIcon,
+      data: { kind: 'folder', id: folder.id },
+      draggable: true,
+      droppable: true,
       contextMenu: (
-        <>
-          <ContextMenuItem onSelect={() => setEditingFolder(folder)}>
-            Edit
-          </ContextMenuItem>
-          <ContextMenuItem onSelect={() => setDeletingFolder(folder)}>
-            Delete
-          </ContextMenuItem>
-        </>
+        <FolderContextMenuItems
+          onEdit={() => setEditingFolder(folder)}
+          onDelete={() => setDeletingFolder(folder)}
+        />
       ),
       children: [
         ...convertDataToTree(folder.folders || [], folder.bookmarks || []),
@@ -89,15 +89,14 @@ export function TreeView({ folders, bookmarks }: TreeViewProps) {
       id: bookmark.id,
       name: bookmark.name || bookmark.url,
       icon: <BookmarkIcon bookmark={bookmark} />,
+      data: { kind: 'bookmark', id: bookmark.id },
+      draggable: true,
+      droppable: false, // Bookmarks can't have items dropped on them
       contextMenu: (
-        <>
-          <ContextMenuItem onSelect={() => setEditingBookmark(bookmark)}>
-            Edit
-          </ContextMenuItem>
-          <ContextMenuItem onSelect={() => setDeletingBookmark(bookmark)}>
-            Delete
-          </ContextMenuItem>
-        </>
+        <BookmarkContextMenuItems
+          onEdit={() => setEditingBookmark(bookmark)}
+          onDelete={() => setDeletingBookmark(bookmark)}
+        />
       ),
       onClick: () => {
         window.open(bookmark.url, '_blank', 'noopener,noreferrer')
@@ -107,15 +106,81 @@ export function TreeView({ folders, bookmarks }: TreeViewProps) {
     return [...folderItems, ...bookmarkItems]
   }
 
+  const handleDocumentDrag = async (sourceItem: TreeDataItem, targetItem: TreeDataItem) => {
+    const sourceData = sourceItem.data as { kind: string; id: string }
+    const targetData = targetItem.data as { kind: string; id: string }
+
+    // Clear any previous error
+    setDragError(null)
+
+    if (!sourceData) {
+      setDragError('Invalid drag operation: missing source item data')
+      return
+    }
+
+    try {
+      // Handle drop on the root level (empty space at bottom)
+      if (!targetData || targetItem.name === 'parent_div') {
+        // Move to root level
+        if (sourceData.kind === 'bookmark') {
+          await moveBookmark(sourceData.id, null)
+        } else if (sourceData.kind === 'folder') {
+          await moveFolder(sourceData.id, null)
+        }
+        return
+      }
+
+      // Prevent dropping on bookmarks (they can't contain other items)
+      if (targetData.kind === 'bookmark') {
+        setDragError('Cannot drop items on bookmarks. Drop on folders or empty space instead.')
+        return
+      }
+
+      // Determine if this is a re-parenting operation (dropping ON a folder)
+      if (targetData.kind === 'folder') {
+        // Re-parenting: move the item into the target folder
+        if (sourceData.kind === 'bookmark') {
+          await moveBookmark(sourceData.id, targetData.id)
+        } else if (sourceData.kind === 'folder') {
+          await moveFolder(sourceData.id, targetData.id)
+        }
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+      setDragError(errorMessage)
+      console.error('Drag operation failed:', error)
+    }
+  }
+
   const treeData = convertDataToTree(folders, bookmarks)
 
   return (
     <div className="w-full">
+      {dragError && (
+        <div className="mb-4 rounded-md border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
+          <div className="flex items-center justify-between">
+            <span>{dragError}</span>
+            <button
+              onClick={() => setDragError(null)}
+              className="text-destructive hover:text-destructive/80"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
       {treeData.length > 0 ? (
         <ShadcnTreeView
           data={treeData}
           defaultLeafIcon={FileIcon}
           defaultNodeIcon={FolderIcon}
+          onSelectChange={(item) => {
+            if (!onSelectedFolderChange) return
+            const data = item?.data as { kind?: string; id?: string } | undefined
+            onSelectedFolderChange(data?.kind === 'folder' ? data.id ?? null : null)
+          }}
+          onDocumentDrag={handleDocumentDrag}
         />
       ) : (
         <p className="text-muted-foreground">

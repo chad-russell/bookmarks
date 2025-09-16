@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  bookmark-app:
+    build:
+      context: .
+      dockerfile: Containerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      # Mount data directory for persistent storage
+      - bookmark-data:/app/data
+      # Alternative: mount a local directory
+      # - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'wget',
+          '--no-verbose',
+          '--tries=1',
+          '--spider',
+          'http://localhost:3000/api/bookmarks',
+          '||',
+          'exit',
+          '1',
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  bookmark-data:
+    driver: local

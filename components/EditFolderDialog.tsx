@@ -33,7 +33,6 @@ export const EditFolderDialog = ({
   return (
     <ResponsiveModal isOpen={true} onClose={onClose} title="Edit Folder">
       <div className="mb-6 grid gap-4">
-        DialogHeader, DialogTitle, DialogDescription, DialogContent
         <div className="grid gap-2 md:grid-cols-4 md:items-center md:gap-4">
           <Label htmlFor="name" className="md:text-right">
             Name

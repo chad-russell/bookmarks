@@ -8,6 +8,7 @@ import { TreeView } from '@/components/TreeView'
 import { ViewSwitcher } from '@/components/ViewSwitcher'
 import { AddBookmarkDialog } from '@/components/AddBookmarkDialog'
 import { AddFolderDialog } from '@/components/AddFolderDialog'
+import { YamlEditor } from '@/components/YamlEditor'
 import { ModeToggle } from '@/components/theme-toggle'
 import {
   Breadcrumb,
@@ -23,8 +24,10 @@ export default function Home() {
     useBookmarks()
   const [isAddingBookmark, setIsAddingBookmark] = useState(false)
   const [isAddingFolder, setIsAddingFolder] = useState(false)
+  const [isEditingYaml, setIsEditingYaml] = useState(false)
   const [currentPath, setCurrentPath] = useState<Folder[]>([])
   const [viewMode, setViewMode] = useState<'grid' | 'tree'>('grid')
+  const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null)
 
   const handleAddBookmarkClick = () => {
     setIsAddingBookmark(true)
@@ -37,6 +40,7 @@ export default function Home() {
   const handleCloseDialogs = () => {
     setIsAddingBookmark(false)
     setIsAddingFolder(false)
+    setIsEditingYaml(false)
   }
 
   const handleSaveFolder = (name: string) => {
@@ -46,14 +50,22 @@ export default function Home() {
       folders: [],
     }
     const parentId =
-      currentPath.length > 0 ? currentPath[currentPath.length - 1].id : null
+      viewMode === 'tree'
+        ? selectedFolderId
+        : currentPath.length > 0
+          ? currentPath[currentPath.length - 1].id
+          : null
     addFolder(parentId, newFolder)
     handleCloseDialogs()
   }
 
   const handleSaveBookmark = (bookmark: Omit<Bookmark, 'id'>) => {
     const parentId =
-      currentPath.length > 0 ? currentPath[currentPath.length - 1].id : null
+      viewMode === 'tree'
+        ? selectedFolderId
+        : currentPath.length > 0
+          ? currentPath[currentPath.length - 1].id
+          : null
     addBookmark(parentId, bookmark)
     handleCloseDialogs()
   }
@@ -119,6 +131,9 @@ export default function Home() {
             <Button onClick={handleAddFolderClick} variant="outline">
               Add Folder
             </Button>
+            <Button onClick={() => setIsEditingYaml(true)} variant="secondary">
+              Edit YAML
+            </Button>
           </div>
         </div>
 
@@ -132,6 +147,7 @@ export default function Home() {
           <TreeView
             folders={currentContents.folders}
             bookmarks={currentContents.bookmarks}
+            onSelectedFolderChange={setSelectedFolderId}
           />
         )}
       </div>
@@ -144,6 +160,12 @@ export default function Home() {
       {isAddingFolder && (
         <AddFolderDialog
           onSave={handleSaveFolder}
+          onClose={handleCloseDialogs}
+        />
+      )}
+      {isEditingYaml && (
+        <YamlEditor
+          isOpen={isEditingYaml}
           onClose={handleCloseDialogs}
         />
       )}

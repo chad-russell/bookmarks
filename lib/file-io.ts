@@ -1,20 +1,21 @@
 import fs from 'fs/promises';
 import yaml from 'js-yaml';
-import { Folder } from './types';
+import { Folder, Bookmark } from './types';
 
 interface BookmarkData {
   folders: Folder[];
+  bookmarks: Bookmark[];
 }
 
 export async function readBookmarks(filePath: string): Promise<BookmarkData> {
   try {
     const fileContent = await fs.readFile(filePath, 'utf8');
     const data = yaml.load(fileContent) as BookmarkData;
-    return data || { folders: [] };
+    return data || { folders: [], bookmarks: [] };
   } catch (error) {
     if (error.code === 'ENOENT') {
       // File doesn't exist, return empty data
-      return { folders: [] };
+      return { folders: [], bookmarks: [] };
     }
     // For other errors, re-throw
     throw error;
