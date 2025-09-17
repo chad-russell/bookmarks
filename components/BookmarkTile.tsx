@@ -54,6 +54,7 @@ export const BookmarkTile = ({ bookmark }: BookmarkTileProps) => {
                 <div className="flex w-full items-center gap-3">
                   <Image
                     src={bookmark.imageUrl || getFaviconUrl(bookmark.url)}
+                    width={32} height={32}
                     alt={`Favicon for ${bookmark.name || bookmark.url}`}
                     className="h-8 w-8 flex-shrink-0 rounded-md"
                   />

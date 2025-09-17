@@ -18,6 +18,19 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { 
+  Plus, 
+  FolderPlus, 
+  Settings,
+  Bookmark as BookmarkIcon,
+  Loader2
+} from 'lucide-react'
 
 export default function Home() {
   const { folders, bookmarks, loading, error, addFolder, addBookmark } =
@@ -79,11 +92,25 @@ export default function Home() {
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return (
+      <main className="flex h-screen flex-col items-center justify-center">
+        <div className="flex items-center gap-3">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          <span className="text-lg text-muted-foreground">Loading your bookmarks...</span>
+        </div>
+      </main>
+    )
   }
 
   if (error) {
-    return <div>Error: {error}</div>
+    return (
+      <main className="flex h-screen flex-col items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold text-destructive mb-2">Something went wrong</h2>
+          <p className="text-muted-foreground">{error}</p>
+        </div>
+      </main>
+    )
   }
 
   const currentFolder =
@@ -96,60 +123,100 @@ export default function Home() {
     : { folders, bookmarks }
 
   return (
-    <main className="flex h-screen flex-col">
-      <div className="absolute top-4 right-4 flex gap-2">
-        <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} />
-        <ModeToggle />
-      </div>
-
-      <div className="flex-1 overflow-auto p-6">
-        <div className="mb-6">
-          <Breadcrumb className="mb-4">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink onClick={() => setCurrentPath([])}>
-                  Bookmarks
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              {currentPath.map((folder, index) => (
-                <React.Fragment key={`path-${index}`}>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem key={folder.id}>
-                    <BreadcrumbLink
-                      onClick={() => handleBreadcrumbClick(index)}
-                    >
-                      {folder.name}
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                </React.Fragment>
-              ))}
-            </BreadcrumbList>
-          </Breadcrumb>
-
-          <div className="mb-4 flex gap-2">
-            <Button onClick={handleAddBookmarkClick}>Add Bookmark</Button>
-            <Button onClick={handleAddFolderClick} variant="outline">
-              Add Folder
-            </Button>
-            <Button onClick={() => setIsEditingYaml(true)} variant="secondary">
-              Edit YAML
-            </Button>
+    <main className="flex h-screen flex-col bg-background">
+      {/* Header */}
+      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex h-16 items-center justify-between px-6">
+          <div className="flex items-center gap-3">
+            <BookmarkIcon className="h-6 w-6 text-primary" />
+            <h1 className="text-xl font-semibold">My Bookmarks</h1>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} />
+            
+            {/* Settings Menu (with Edit YAML) */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Settings className="h-4 w-4" />
+                  <span className="sr-only">Settings</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setIsEditingYaml(true)}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  Edit YAML
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
+            <ModeToggle />
           </div>
         </div>
+      </header>
 
-        {viewMode === 'grid' ? (
-          <TileView
-            folders={currentContents.folders}
-            bookmarks={currentContents.bookmarks}
-            onFolderClick={handleFolderClick}
-          />
-        ) : (
-          <TreeView
-            folders={currentContents.folders}
-            bookmarks={currentContents.bookmarks}
-            onSelectedFolderChange={setSelectedFolderId}
-          />
-        )}
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto">
+        <div className="container mx-auto max-w-7xl p-6">
+          {/* Navigation */}
+          <div className="mb-8">
+            <Breadcrumb className="mb-6">
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink 
+                    onClick={() => setCurrentPath([])}
+                    className="flex items-center gap-2 text-lg font-medium"
+                  >
+                    Home
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                {currentPath.map((folder, index) => (
+                  <React.Fragment key={`path-${index}`}>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem key={folder.id}>
+                      <BreadcrumbLink
+                        onClick={() => handleBreadcrumbClick(index)}
+                        className="text-lg font-medium"
+                      >
+                        {folder.name}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                  </React.Fragment>
+                ))}
+              </BreadcrumbList>
+            </Breadcrumb>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3">
+              <Button onClick={handleAddBookmarkClick} className="gap-2">
+                <Plus className="h-4 w-4" />
+                Add Bookmark
+              </Button>
+              <Button onClick={handleAddFolderClick} variant="outline" className="gap-2">
+                <FolderPlus className="h-4 w-4" />
+                Add Folder
+              </Button>
+            </div>
+          </div>
+
+          {/* Content Area */}
+          <div className="min-h-[400px]">
+            {viewMode === 'grid' ? (
+              <TileView
+                folders={currentContents.folders}
+                bookmarks={currentContents.bookmarks}
+                onFolderClick={handleFolderClick}
+              />
+            ) : (
+              <TreeView
+                folders={currentContents.folders}
+                bookmarks={currentContents.bookmarks}
+                onSelectedFolderChange={setSelectedFolderId}
+              />
+            )}
+          </div>
+        </div>
       </div>
       {isAddingBookmark && (
         <AddBookmarkDialog
