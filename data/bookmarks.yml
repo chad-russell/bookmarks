@@ -41,86 +41,86 @@ folders:
         url: https://karakeep.internal.crussell.io
         imageUrl: https://karakeep.internal.crussell.io/icon.png?a7a93df59b866555
         id: b030bf1f-8eb2-451c-8b49-2b77483a7b34
-    folders: []
-  - id: 9abcdef0-1234-5678-90ab-cdef01234567
-    name: Media
-    bookmarks:
-      - id: 01234567-89ab-cdef-0123-456789abcdef
-        url: https://sonarr.crussell.io/
-        name: Sonarr
-        imageUrl: https://sonarr.internal.crussell.io/Content/Images/logo.svg
-      - id: 12345678-90ab-cdef-1234-567890abcd
-        url: https://radar.crussell.io/
-        name: Radar
-        imageUrl: >-
-          https://radarr.internal.crussell.io/Content/Images/Icons/apple-touch-icon.png?h=EPy9wv+r9neeI/wGbwTeLQ
-      - id: 23456789-0abc-def1-2345-67890abcd
-        url: https://prowlarr.crussell.io/
-        name: Prowlarr
-        imageUrl: https://prowlarr.internal.crussell.io/Content/Images/logo.png
-      - id: 34567890-abcd-ef12-3456-7890abcd
-        url: https://jackett.crussell.io/
-        name: Jackett
-        imageUrl: https://jackett.internal.crussell.io/jacket_medium.png
-      - id: 4567890a-bcde-f123-4567-890abcd
-        url: https://qbittorrent.crussell.io/
-        name: qBittorrent
-        imageUrl: >-
-          data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik0xMiAyLjYyMUE5LjM3OSA5LjM3OSAwIDEgMCAyMS4zNzkgMTJBOS4zOSA5LjM5IDAgMCAwIDEyIDIuNjIxbS0uODUgMTUuNTA4aC0uOTk0di0yLjgwN2E3IDcgMCAwIDEgLjA2Ni0xLjAxOGgtLjA3OGEyLjM0IDIuMzQgMCAwIDEtMi4wNzEgMWEyLjQgMi40IDAgMCAxLTEuOTgxLS44OTJhMy45IDMuOSAwIDAgMS0uNzEyLTIuNDlhMy45NCAzLjk0IDAgMCAxIC43Mi0yLjUxNGEyLjQxIDIuNDEgMCAwIDEgMi0uOWEyLjM5IDIuMzkgMCAwIDEgMi4wNzEgMS4wMThoLjA1NGwuMTQ0LS45aC43ODR6bTYuNzUtMy43MTdhMi40MiAyLjQyIDAgMCAxLTIgLjg5MmEyLjkgMi45IDAgMCAxLTEuMTc0LS4yMzNhMi4yIDIuMiAwIDAgMS0uODg1LS43MzFoLS4wNzJsLS4yMS44NDRoLS43MTJWNS44NzFoLjk5NHYyLjI2MnEwIC43NjEtLjA0OCAxLjM2NWguMDQ4YTIuMzYgMi4zNiAwIDAgMSAyLjA1OS0uOTgyYTIuNDMgMi40MyAwIDAgMSAyIC44ODRhMy44NSAzLjg1IDAgMCAxIC43MTggMi41YTMuOSAzLjkgMCAwIDEtLjcxOCAyLjUxMm0zLjMxNC02LjMwNUExMC4wMzQgMTAuMDM0IDAgMSAwIDIyIDEyYTEwIDEwIDAgMCAwLS43ODYtMy44OTNtLS4xMjggNy43MzJhOS44NjcgOS44NjcgMCAwIDEtMTguMTcyIDBBOS44NjEgOS44NjEgMCAwIDEgMTguOTczIDUuMDI3YTkuODcgOS44NyAwIDAgMSAyLjExMyAxMC44MTJNOC4yMTEgOS4zMzZhMS41MyAxLjUzIDAgMCAwLTEuMzQxLjY4M2EzLjQgMy40IDAgMCAwLS40NjEgMS45MTVhMy4zIDMuMyAwIDAgMCAuNDU1IDEuODkyYTEuNTYgMS41NiAwIDAgMCAxLjM1OS42NDZhMS44IDEuOCAwIDAgMCAxLjQ0OS0uNTMzYTIuOSAyLjkgMCAwIDAgLjQ4NC0xLjc5NXYtLjIyMmEzLjMgMy4zIDAgMCAwLS40NjYtMS45ODFhMS43NSAxLjc1IDAgMCAwLTEuNDc5LS42MDVtNy41NDIuMDEyYTEuNzMgMS43MyAwIDAgMC0xLjQ2Ni41ODdhMy4yNyAzLjI3IDAgMCAwLS40NDkgMS45NjNhMy4zIDMuMyAwIDAgMCAuNDYgMS45ODFhMS43NiAxLjc2IDAgMCAwIDEuNDc5LjU5M2ExLjU0IDEuNTQgMCAwIDAgMS4zNjUtLjY2NGEzLjQ1IDMuNDUgMCAwIDAgLjQ0OC0xLjkyMmEzLjMgMy4zIDAgMCAwLS40NDgtMS45MDlhMS42IDEuNiAwIDAgMC0xLjM4OS0uNjI5Ii8+PC9zdmc+
-      - id: 567890ab-cdef-1234-5678-90abcd
-        url: https://jellyseerr.crussell.io/
-        name: Jellyseerr
-        imageUrl: https://jellyseerr.crussell.io/apple-touch-icon.png
-      - id: 67890abc-def1-2345-6789-0abcd
-        url: https://jellyfin.crussell.io/
-        name: Jellyfin
-        imageUrl: https://jellyfin.crussell.io/web/bc8d51405ec040305a87.ico
-    folders: []
-  - id: 7890abcdef-1234-5678-90ab-cdef01234567
-    name: Management
-    bookmarks:
-      - id: 890abcdef-1234-5678-90ab-cdef01234567
-        url: https://opnsense.crussell.io/
-        name: OPNsense
-        imageUrl: >-
-          https://192.168.10.1/ui/themes/opnsense/build/images/favicon.png?v=b9f1f06bd5c29beb
-      - id: 90abcdef-1234-5678-90ab-cdef01234567
-        url: http://k1.crussell.io/
-        name: k1
-        imageUrl: >-
-          https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Fedora_icon_%282021%29.svg/1024px-Fedora_icon_%282021%29.svg.png?20220308003156
-      - id: abcdef01-2345-6789-0abc-def01234567
-        url: https://capacitor.internal.crussell.io/
-        name: Capacitor
-        imageUrl: ''
-      - id: def01234-5678-90ab-cdef-01234567
-        url: >-
-          https://851373332518-pkq4zb5t.us-east-1.console.aws.amazon.com/console/home
-        name: AWS Console
-        imageUrl: >-
-          https://a.b.cdn.console.awsstatic.com/a/v1/SBQPJ2KITBJBVBDS2H4AHZ2PG7MG3MCJXBNZURAB7BK5445DZHJA/icon/bfafd813d7ea65ee4db1f09d7c8ffbf4-87859fc8cca2415c41904d8e0db7253d.svg
-      - id: 12345678-90ab-cdef-2345-67890abcd
-        url: https://longhorn.internal.crussell.io/
-        name: Longhorn
-        imageUrl: https://longhorn.internal.crussell.io/favicon.ico
-      - id: 23456789-0abc-def1-3456-7890abcd
-        url: https://pgadmin.internal.crussell.io/
-        name: pgAdmin
-        imageUrl: https://pgadmin.internal.crussell.io/static/favicon.ico?ver=81400
-      - id: 34567890-abcd-ef12-4567-890abcd
-        url: https://truenas.internal.crussell.io/
-        name: TrueNAS
-        imageUrl: >-
-          data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik0yNCAxMC4wNDl2NS4xMTRsLTEwLjk0OSA2LjMyNHYtNS4xMTR6bS0yNCAwdjUuMTE0bDEwLjk1NiA2LjMyNHYtNS4xMTR6bTEyLjAwNC0uNjA1bC00LjQzMyAyLjU1OWw0LjQzMyAyLjU1OWw0LjQyOS0yLjU1OXptMTAuOTUyLTEuMjA3bC05LjkwNS01LjcyM3Y1LjExOGw1LjQ3MyAzLjE2NHptLTEyLS42MDVWMi41MTNMMS4wNDQgOC4yMzZsNC40MzIgMi41NTV6Ii8+PC9zdmc+
-      - id: 567890ab-cdef-1234-6789-0abcd
-        url: https://minio.internal.crussell.io/
-        name: MinIO
-        imageUrl: https://minio.internal.crussell.io/apple-icon-180x180.png
-      - id: 67890abc-def1-2345-7890-abcd
-        url: https://traefik.internal.crussell.io/
-        name: Traefik
-        imageUrl: >-
-          https://traefik.internal.crussell.io/dashboard/icons/apple-icon-180x180.png
+    folders:
+      - id: 9abcdef0-1234-5678-90ab-cdef01234567
+        name: Media
+        bookmarks:
+          - id: 01234567-89ab-cdef-0123-456789abcdef
+            url: https://sonarr.crussell.io/
+            name: Sonarr
+            imageUrl: https://sonarr.internal.crussell.io/Content/Images/logo.svg
+          - id: 12345678-90ab-cdef-1234-567890abcd
+            url: https://radar.crussell.io/
+            name: Radar
+            imageUrl: >-
+              https://radarr.internal.crussell.io/Content/Images/Icons/apple-touch-icon.png?h=EPy9wv+r9neeI/wGbwTeLQ
+          - id: 23456789-0abc-def1-2345-67890abcd
+            url: https://prowlarr.crussell.io/
+            name: Prowlarr
+            imageUrl: https://prowlarr.internal.crussell.io/Content/Images/logo.png
+          - id: 34567890-abcd-ef12-3456-7890abcd
+            url: https://jackett.crussell.io/
+            name: Jackett
+            imageUrl: https://jackett.internal.crussell.io/jacket_medium.png
+          - id: 4567890a-bcde-f123-4567-890abcd
+            url: https://qbittorrent.crussell.io/
+            name: qBittorrent
+            imageUrl: >-
+              data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik0xMiAyLjYyMUE5LjM3OSA5LjM3OSAwIDEgMCAyMS4zNzkgMTJBOS4zOSA5LjM5IDAgMCAwIDEyIDIuNjIxbS0uODUgMTUuNTA4aC0uOTk0di0yLjgwN2E3IDcgMCAwIDEgLjA2Ni0xLjAxOGgtLjA3OGEyLjM0IDIuMzQgMCAwIDEtMi4wNzEgMWEyLjQgMi40IDAgMCAxLTEuOTgxLS44OTJhMy45IDMuOSAwIDAgMS0uNzEyLTIuNDlhMy45NCAzLjk0IDAgMCAxIC43Mi0yLjUxNGEyLjQxIDIuNDEgMCAwIDEgMi0uOWEyLjM5IDIuMzkgMCAwIDEgMi4wNzEgMS4wMThoLjA1NGwuMTQ0LS45aC43ODR6bTYuNzUtMy43MTdhMi40MiAyLjQyIDAgMCAxLTIgLjg5MmEyLjkgMi45IDAgMCAxLTEuMTc0LS4yMzNhMi4yIDIuMiAwIDAgMS0uODg1LS43MzFoLS4wNzJsLS4yMS44NDRoLS43MTJWNS44NzFoLjk5NHYyLjI2MnEwIC43NjEtLjA0OCAxLjM2NWguMDQ4YTIuMzYgMi4zNiAwIDAgMSAyLjA1OS0uOTgyYTIuNDMgMi40MyAwIDAgMSAyIC44ODRhMy44NSAzLjg1IDAgMCAxIC43MTggMi41YTMuOSAzLjkgMCAwIDEtLjcxOCAyLjUxMm0zLjMxNC02LjMwNUExMC4wMzQgMTAuMDM0IDAgMSAwIDIyIDEyYTEwIDEwIDAgMCAwLS43ODYtMy44OTNtLS4xMjggNy43MzJhOS44NjcgOS44NjcgMCAwIDEtMTguMTcyIDBBOS44NjEgOS44NjEgMCAwIDEgMTguOTczIDUuMDI3YTkuODcgOS44NyAwIDAgMSAyLjExMyAxMC44MTJNOC4yMTEgOS4zMzZhMS41MyAxLjUzIDAgMCAwLTEuMzQxLjY4M2EzLjQgMy40IDAgMCAwLS40NjEgMS45MTVhMy4zIDMuMyAwIDAgMCAuNDU1IDEuODkyYTEuNTYgMS41NiAwIDAgMCAxLjM1OS42NDZhMS44IDEuOCAwIDAgMCAxLjQ0OS0uNTMzYTIuOSAyLjkgMCAwIDAgLjQ4NC0xLjc5NXYtLjIyMmEzLjMgMy4zIDAgMCAwLS40NjYtMS45ODFhMS43NSAxLjc1IDAgMCAwLTEuNDc5LS42MDVtNy41NDIuMDEyYTEuNzMgMS43MyAwIDAgMC0xLjQ2Ni41ODdhMy4yNyAzLjI3IDAgMCAwLS40NDkgMS45NjNhMy4zIDMuMyAwIDAgMCAuNDYgMS45ODFhMS43NiAxLjc2IDAgMCAwIDEuNDc5LjU5M2ExLjU0IDEuNTQgMCAwIDAgMS4zNjUtLjY2NGEzLjQ1IDMuNDUgMCAwIDAgLjQ0OC0xLjkyMmEzLjMgMy4zIDAgMCAwLS40NDgtMS45MDlhMS42IDEuNiAwIDAgMC0xLjM4OS0uNjI5Ii8+PC9zdmc+
+          - id: 567890ab-cdef-1234-5678-90abcd
+            url: https://jellyseerr.crussell.io/
+            name: Jellyseerr
+            imageUrl: https://jellyseerr.crussell.io/apple-touch-icon.png
+          - id: 67890abc-def1-2345-6789-0abcd
+            url: https://jellyfin.crussell.io/
+            name: Jellyfin
+            imageUrl: https://jellyfin.crussell.io/web/bc8d51405ec040305a87.ico
+        folders: []
+      - id: 7890abcdef-1234-5678-90ab-cdef01234567
+        name: Management
+        bookmarks:
+          - id: 890abcdef-1234-5678-90ab-cdef01234567
+            url: https://opnsense.crussell.io/
+            name: OPNsense
+            imageUrl: >-
+              https://192.168.10.1/ui/themes/opnsense/build/images/favicon.png?v=b9f1f06bd5c29beb
+          - id: 90abcdef-1234-5678-90ab-cdef01234567
+            url: http://k1.crussell.io/
+            name: k1
+            imageUrl: >-
+              https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Fedora_icon_%282021%29.svg/1024px-Fedora_icon_%282021%29.svg.png?20220308003156
+          - id: abcdef01-2345-6789-0abc-def01234567
+            url: https://capacitor.internal.crussell.io/
+            name: Capacitor
+            imageUrl: ''
+          - id: def01234-5678-90ab-cdef-01234567
+            url: >-
+              https://851373332518-pkq4zb5t.us-east-1.console.aws.amazon.com/console/home
+            name: AWS Console
+            imageUrl: >-
+              https://a.b.cdn.console.awsstatic.com/a/v1/SBQPJ2KITBJBVBDS2H4AHZ2PG7MG3MCJXBNZURAB7BK5445DZHJA/icon/bfafd813d7ea65ee4db1f09d7c8ffbf4-87859fc8cca2415c41904d8e0db7253d.svg
+          - id: 12345678-90ab-cdef-2345-67890abcd
+            url: https://longhorn.internal.crussell.io/
+            name: Longhorn
+            imageUrl: https://longhorn.internal.crussell.io/favicon.ico
+          - id: 23456789-0abc-def1-3456-7890abcd
+            url: https://pgadmin.internal.crussell.io/
+            name: pgAdmin
+            imageUrl: https://pgadmin.internal.crussell.io/static/favicon.ico?ver=81400
+          - id: 34567890-abcd-ef12-4567-890abcd
+            url: https://truenas.internal.crussell.io/
+            name: TrueNAS
+            imageUrl: >-
+              data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik0yNCAxMC4wNDl2NS4xMTRsLTEwLjk0OSA2LjMyNHYtNS4xMTR6bS0yNCAwdjUuMTE0bDEwLjk1NiA2LjMyNHYtNS4xMTR6bTEyLjAwNC0uNjA1bC00LjQzMyAyLjU1OWw0LjQzMyAyLjU1OWw0LjQyOS0yLjU1OXptMTAuOTUyLTEuMjA3bC05LjkwNS01LjcyM3Y1LjExOGw1LjQ3MyAzLjE2NHptLTEyLS42MDVWMi41MTNMMS4wNDQgOC4yMzZsNC40MzIgMi41NTV6Ii8+PC9zdmc+
+          - id: 567890ab-cdef-1234-6789-0abcd
+            url: https://minio.internal.crussell.io/
+            name: MinIO
+            imageUrl: https://minio.internal.crussell.io/apple-icon-180x180.png
+          - id: 67890abc-def1-2345-7890-abcd
+            url: https://traefik.internal.crussell.io/
+            name: Traefik
+            imageUrl: >-
+              https://traefik.internal.crussell.io/dashboard/icons/apple-icon-180x180.png
   - id: 0f1e2d3c-4b5a-6978-90ab-cdef0123abcd
     name: Gloo
     bookmarks:

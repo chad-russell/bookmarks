@@ -10,6 +10,7 @@ import { AddBookmarkDialog } from '@/components/AddBookmarkDialog'
 import { AddFolderDialog } from '@/components/AddFolderDialog'
 import { YamlEditor } from '@/components/YamlEditor'
 import { ModeToggle } from '@/components/theme-toggle'
+import { ThemeSwitcher } from '@/components/ThemeSwitcher'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -151,6 +152,7 @@ export default function Home() {
               </DropdownMenuContent>
             </DropdownMenu>
             
+            <ThemeSwitcher />
             <ModeToggle />
           </div>
         </div>

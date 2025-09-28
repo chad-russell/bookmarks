@@ -19,6 +19,22 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
+        {/* Early theme attribute application to avoid flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+            (function(){
+              try {
+                var k='theme-name';
+                var v=localStorage.getItem(k);
+                if(v && v !== 'default'){
+                  document.documentElement.setAttribute('data-theme', v);
+                }
+              } catch(e){}
+            })();
+          `,
+          }}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
